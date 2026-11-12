@@ -2,7 +2,11 @@
 
 [简体中文](CONFIGURATION.zh-CN.md)
 
-The Pi package reads the official Hindsight configuration at `~/.hindsight/coding-agent.json`. On Windows, this is `$HOME\.hindsight\coding-agent.json`.
+The Pi package stores its configuration at `~/.pi/agent/hindsight.json`. On Windows, this is `$HOME\.pi\agent\hindsight.json`.
+
+If `PI_CODING_AGENT_DIR` is set, the default file is `hindsight.json` in that directory. An explicit `HINDSIGHT_CONFIG` takes precedence.
+
+On first load, an existing `~/.hindsight/coding-agent.json` is copied to the Pi location if the destination is absent. The original file is retained for other clients. After upgrading from 0.1.1 or earlier, restart Pi / PiWeb once so the official runtime reloads its configuration path.
 
 Create the file, or update the connection fields in an existing file:
 

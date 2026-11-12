@@ -19,7 +19,7 @@ pi install npm:pi-hindsight-companion
 
 In PiWeb, use **Settings → Plugins → Add plugin** and enter `npm:pi-hindsight-companion`.
 
-Set the server address and API token in `~/.hindsight/coding-agent.json` using the [configuration guide](docs/CONFIGURATION.md), then reload Pi.
+Set the server address and API token in `~/.pi/agent/hindsight.json` using the [configuration guide](docs/CONFIGURATION.md), then reload Pi.
 
 In PiWeb, open **Settings → Plugins** to enable or disable the package. Reload the affected session to apply the change.
 

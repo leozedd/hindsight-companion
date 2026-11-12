@@ -2,7 +2,11 @@
 
 [English](CONFIGURATION.md)
 
-Pi 插件读取官方 Hindsight 配置文件 `~/.hindsight/coding-agent.json`。Windows 对应路径为 `$HOME\.hindsight\coding-agent.json`。
+Pi 插件的配置文件为 `~/.pi/agent/hindsight.json`。Windows 对应路径为 `$HOME\.pi\agent\hindsight.json`。
+
+设置了 `PI_CODING_AGENT_DIR` 时，默认使用该目录中的 `hindsight.json`。显式设置的 `HINDSIGHT_CONFIG` 优先。
+
+首次加载时，如果 Pi 配置文件不存在，会从已有的 `~/.hindsight/coding-agent.json` 复制配置。原文件保留，供其他客户端使用。从 0.1.1 或更早版本升级后，重启一次 Pi / PiWeb，使官方运行时重新读取配置路径。
 
 创建该文件，或在已有配置中更新连接字段：
 

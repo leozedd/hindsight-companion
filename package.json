@@ -1,6 +1,6 @@
 {
   "name": "pi-hindsight-companion",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A standard Pi / PiWeb package for the official Hindsight coding-agent extension. Independent Windows tray manager available in the source repository.",
   "type": "module",
   "license": "MIT",
@@ -8,7 +8,7 @@
   "homepage": "https://github.com/leozedd/hindsight-companion#readme",
   "engines": { "node": ">=22" },
   "keywords": ["pi-package", "pi-extension", "pi-web", "hindsight", "memory"],
-  "files": ["extension/hindsight.js", "README.md", "CHANGELOG.md", "CHANGELOG.zh-CN.md", "LICENSE", "NOTICE", "SECURITY.md", "SECURITY.zh-CN.md", "docs/CONFIGURATION.md", "docs/CONFIGURATION.zh-CN.md", "docs/README.zh-CN.md", "docs/RELEASING.md", "docs/RELEASING.zh-CN.md", "docs/NOTICE.zh-CN.md", "windows/README.md", "windows/README.zh-CN.md"],
+  "files": ["extension/hindsight.js", "extension/config.js", "README.md", "CHANGELOG.md", "CHANGELOG.zh-CN.md", "LICENSE", "NOTICE", "SECURITY.md", "SECURITY.zh-CN.md", "docs/CONFIGURATION.md", "docs/CONFIGURATION.zh-CN.md", "docs/README.zh-CN.md", "docs/RELEASING.md", "docs/RELEASING.zh-CN.md", "docs/NOTICE.zh-CN.md", "windows/README.md", "windows/README.zh-CN.md"],
   "pi": {
     "extensions": ["./extension/hindsight.js"],
     "skills": [],

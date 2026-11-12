@@ -2,6 +2,11 @@
 
 [English](CHANGELOG.md)
 
+## [0.1.2]
+
+- 插件默认使用 Pi agent 目录中的 `hindsight.json`。
+- 首次加载时迁移旧配置，不覆盖已有 Pi 配置，并保留显式配置路径设置。
+
 ## [0.1.1]
 
 - 运行时解析官方依赖位置，修复 npm / pnpm 安装后配套 Skill 无法被发现的问题。
