@@ -26,7 +26,8 @@ export const rules = [
 export function inspectText(text, extraForbidden = []) {
   const issues = rules.filter(([, pattern]) => pattern.test(text)).map(([name]) => name);
   const localName = basename(homedir());
-  const values = [...extraForbidden, ...(localName.length >= 4 ? [localName] : [])];
+  // Hosted CI account names are infrastructure labels, not the publisher's identity.
+  const values = [...extraForbidden, ...(localName.length >= 4 && process.env.GITHUB_ACTIONS !== 'true' ? [localName] : [])];
   if (values.some(value => value && text.toLowerCase().includes(value.toLowerCase()))) issues.push('local/private identifier');
   if (text.includes('\u0000')) issues.push('binary content');
   return issues;
