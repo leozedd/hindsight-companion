@@ -1,6 +1,6 @@
 {
   "name": "pi-hindsight-companion",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A standard Pi / PiWeb package for the official Hindsight coding-agent extension. Independent Windows tray manager available in the source repository.",
   "type": "module",
   "license": "MIT",
@@ -11,7 +11,7 @@
   "files": ["extension/hindsight.js", "README.md", "CHANGELOG.md", "CHANGELOG.zh-CN.md", "LICENSE", "NOTICE", "SECURITY.md", "SECURITY.zh-CN.md", "docs/CONFIGURATION.md", "docs/CONFIGURATION.zh-CN.md", "docs/README.zh-CN.md", "docs/RELEASING.md", "docs/RELEASING.zh-CN.md", "docs/NOTICE.zh-CN.md", "windows/README.md", "windows/README.zh-CN.md"],
   "pi": {
     "extensions": ["./extension/hindsight.js"],
-    "skills": ["./node_modules/@vectorize-io/hindsight-coding-agents/skill"],
+    "skills": [],
     "prompts": [],
     "themes": []
   },
