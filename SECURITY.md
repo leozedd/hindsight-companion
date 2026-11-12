@@ -1,11 +1,19 @@
-# Security and privacy
+# Security
 
-Do not post credentials, private configuration, memory exports, logs, screenshots, model directories, databases or backups to issues. Describe a reproduction using synthetic data. If you discover a credential exposure, revoke/rotate that credential at its issuer first. Deleting a Git file does not revoke a leaked key or erase public history.
+[简体中文](SECURITY.zh-CN.md)
 
-This repository ships a source allowlist and a local privacy gate. It checks release filenames, common credential/private-path patterns, personal-network addresses and unexpected binary files. This reduces accidental leakage; it does not prove absence of all personal or proprietary information. Review the complete staged diff and archive inventory before every public upload.
+## Data flow
 
-The npm wrapper runs the official Hindsight extension with the user's Pi permissions. It adds no telemetry or remote listener. Official extension/service requests follow the user's own configuration and may include prompts, memory content and project data. Disabling a plugin does not retract already-sent data or revoke API credentials.
+The Pi package loads the official Hindsight extension. Recall and retention requests use the configured Hindsight service, which may call its configured LLM provider. Automatic session retention and project ingestion are controlled by the official extension's settings.
 
-The optional Windows updater downloads executable code from PyPI/npm. Review upstream changes and back up data. Its retained runtime logs and backups are private. The API defaults to loopback with key authentication; exposing HTTP to another host requires a separately secured network and transport.
+## Service access
 
-Until a public repository's private security-reporting channel is enabled, do not disclose vulnerability details or private attachments in public issues. Report privately through a maintainer-controlled channel once one is published; this candidate intentionally lists no personal email address.
+The Windows template binds the API and Control Plane to loopback and enables API-key authentication. Access from another machine needs an authenticated API endpoint over a protected network or TLS connection.
+
+## Backups and logs
+
+Server update backups include the database and `.env`. Restrict their access like the live service data. When reporting a problem, provide a minimal reproduction and relevant log excerpts with credentials and memory content removed.
+
+## Exposed credentials
+
+Revoke or rotate an exposed credential with its issuing service, then update the clients that use it. Removing a file from a repository does not invalidate its credentials.

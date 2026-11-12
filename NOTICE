@@ -1,13 +1,11 @@
-Hindsight Companion is an independent community packaging/management project.
+Hindsight Companion
+Community packaging and management tools for Hindsight.
 
 Official runtime dependency:
 @vectorize-io/hindsight-coding-agents
 https://github.com/vectorize-io/hindsight
 Copyright (c) 2025 Vectorize AI, Inc. — MIT License
-Upstream license: https://github.com/vectorize-io/hindsight/blob/main/LICENSE
+https://github.com/vectorize-io/hindsight/blob/main/LICENSE
 
-The official runtime is resolved from npm, not copied from a private deployment.
-The companion entry re-exports its Pi factory; memory hooks and tools remain upstream.
-No Pi, PiWeb or Vectorize affiliation or endorsement is implied.
-The optional Windows cleanup guard targets upstream Hindsight's MIT-licensed
-local_device.py; retain upstream copyright notices when applying that change.
+The Windows CUDA cleanup adjustment targets upstream Hindsight local_device.py.
+Retain the upstream copyright notices when applying the adjustment.

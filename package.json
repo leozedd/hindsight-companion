@@ -8,7 +8,7 @@
   "homepage": "https://github.com/leozedd/hindsight-companion#readme",
   "engines": { "node": ">=22" },
   "keywords": ["pi-package", "pi-extension", "pi-web", "hindsight", "memory"],
-  "files": ["extension/hindsight.js", "README.md", "CHANGELOG.md", "LICENSE", "NOTICE", "SECURITY.md", "docs/CONFIGURATION.md", "docs/README.zh-CN.md", "docs/RELEASING.md", "windows/README.md"],
+  "files": ["extension/hindsight.js", "README.md", "CHANGELOG.md", "CHANGELOG.zh-CN.md", "LICENSE", "NOTICE", "SECURITY.md", "SECURITY.zh-CN.md", "docs/CONFIGURATION.md", "docs/CONFIGURATION.zh-CN.md", "docs/README.zh-CN.md", "docs/RELEASING.md", "docs/RELEASING.zh-CN.md", "docs/NOTICE.zh-CN.md", "windows/README.md", "windows/README.zh-CN.md"],
   "pi": {
     "extensions": ["./extension/hindsight.js"],
     "skills": ["./node_modules/@vectorize-io/hindsight-coding-agents/skill"],
