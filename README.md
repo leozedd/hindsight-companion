@@ -11,14 +11,13 @@ The two components can be used independently. Plugin updates and server updates 
 
 ## Install the Pi package
 
-Requires Node.js 22+, pnpm, Pi and a running Hindsight server. The npm package is not yet published; install from a source checkout:
+Requires Node.js 22+, Pi and a running Hindsight server.
 
 ```sh
-git clone https://github.com/leozedd/hindsight-companion.git
-cd hindsight-companion
-pnpm install --ignore-scripts
-pi install .
+pi install npm:pi-hindsight-companion
 ```
+
+In PiWeb, use **Settings → Plugins → Add plugin** and enter `npm:pi-hindsight-companion`.
 
 Set the server address and API token in `~/.hindsight/coding-agent.json` using the [configuration guide](docs/CONFIGURATION.md), then reload Pi.
 
@@ -26,14 +25,13 @@ In PiWeb, open **Settings → Plugins** to enable or disable the package. Reload
 
 ### Update
 
-For a source installation, run these commands in the checkout, then reload the session:
+Use PiWeb's **Check / Update** actions, or run:
 
 ```sh
-git pull
-pnpm install --ignore-scripts
+pi update --extensions
 ```
 
-For npm installations, PiWeb's **Check / Update** actions install the latest Companion release and its specified official runtime version. Official runtime updates become available when included in a Companion release.
+Reload the session afterward. Updates install the latest Companion release and its specified official runtime version. Official runtime updates become available when included in a Companion release.
 
 ## Install the Windows tray
 

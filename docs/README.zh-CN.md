@@ -11,14 +11,13 @@
 
 ## 安装 Pi 插件
 
-需要 Node.js 22+、pnpm、Pi，以及可访问的 Hindsight 服务。npm 包尚未发布，目前从源码安装：
+需要 Node.js 22+、Pi，以及可访问的 Hindsight 服务。
 
 ```sh
-git clone https://github.com/leozedd/hindsight-companion.git
-cd hindsight-companion
-pnpm install --ignore-scripts
-pi install .
+pi install npm:pi-hindsight-companion
 ```
+
+也可在 PiWeb「设置 → 插件 → 添加插件」中输入 `npm:pi-hindsight-companion`。
 
 按[连接配置](CONFIGURATION.zh-CN.md)在 `~/.hindsight/coding-agent.json` 中填写服务地址和 API 令牌，然后重载 Pi。
 
@@ -26,14 +25,13 @@ pi install .
 
 ### 更新插件
 
-源码安装时，在仓库目录执行以下命令，然后重载会话：
+在 PiWeb 中点击「检查 / 更新」，或执行：
 
 ```sh
-git pull
-pnpm install --ignore-scripts
+pi update --extensions
 ```
 
-通过 npm 安装的版本可在 PiWeb 中点击「检查 / 更新」，安装最新 Companion 发行版及其指定的官方运行版本。官方运行版本的更新随 Companion 发行版提供。
+更新后重载会话。更新内容包含最新 Companion 发行版及其指定的官方运行版本。官方运行版本的更新随 Companion 发行版提供。
 
 ## 安装 Windows 托盘
 
