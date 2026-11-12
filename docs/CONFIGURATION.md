@@ -8,10 +8,13 @@ If `PI_CODING_AGENT_DIR` is set, the default file is `hindsight.json` in that di
 
 On first load, an existing `~/.hindsight/coding-agent.json` is copied to the Pi location if the destination is absent. The original file is retained for other clients. After upgrading from 0.1.1 or earlier, restart Pi / PiWeb once so the official runtime reloads its configuration path.
 
-Create the file, or update the connection fields in an existing file:
+With no existing configuration, the first plugin load creates the template below and shows its location in Pi / PiWeb. Installing the npm package alone does not create the file; start or reload Pi afterward. The template stays disabled until connection details are filled in. Explicit `HINDSIGHT_CONFIG` paths remain user-managed.
+
+Update the generated file:
 
 ```json
 {
+  "disabled": true,
   "serverMode": "self-hosted",
   "apiUrl": "http://127.0.0.1:8888",
   "apiToken": "",
@@ -22,13 +25,16 @@ Create the file, or update the connection fields in an existing file:
 
 | Field | Value |
 |---|---|
+| `disabled` | Change to `false` after configuring the connection |
 | `serverMode` | `self-hosted` for an existing Hindsight service |
 | `apiUrl` | URL reachable from the machine running Pi |
 | `apiToken` | API key issued by that service |
 | `bankId` | Memory bank to use |
 | `dynamicBankId` | `false` to use the specified bank rather than select one by project |
 
-Fill in the API token and bank, then reload the session. Run the official `hindsight_diagnose` tool to check the effective connection.
+Set the server URL, API token and bank, then change `disabled` to `false` and reload the session. The Hindsight tools remain unavailable while disabled. Run the official `hindsight_diagnose` tool after enabling to check the effective connection.
+
+When connecting from another computer, `127.0.0.1` refers to that computer. Use the Hindsight server’s reachable address, API token and bank ID; for a shared bank, use the same bank ID on every client.
 
 ## Recall and retention
 

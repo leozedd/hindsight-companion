@@ -19,7 +19,7 @@ pi install npm:pi-hindsight-companion
 
 也可在 PiWeb「设置 → 插件 → 添加插件」中输入 `npm:pi-hindsight-companion`。
 
-按[连接配置](CONFIGURATION.zh-CN.md)在 `~/.pi/agent/hindsight.json` 中填写服务地址和 API 令牌，然后重载 Pi。
+安装后启动或重载 Pi。全新环境首次加载时，插件会在 `~/.pi/agent/hindsight.json` 生成禁用状态的配置模板。填写服务地址、API 令牌和记忆库，将 `disabled` 改为 `false`，然后重载 Pi。详见[连接配置](CONFIGURATION.zh-CN.md)。
 
 在 PiWeb「设置 → 插件」中可启用或禁用插件包。切换后重载目标会话，使设置生效。
 

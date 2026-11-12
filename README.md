@@ -19,7 +19,7 @@ pi install npm:pi-hindsight-companion
 
 In PiWeb, use **Settings → Plugins → Add plugin** and enter `npm:pi-hindsight-companion`.
 
-Set the server address and API token in `~/.pi/agent/hindsight.json` using the [configuration guide](docs/CONFIGURATION.md), then reload Pi.
+Load or reload Pi after installation. On a new setup, the plugin creates a disabled configuration template at `~/.pi/agent/hindsight.json`. Set the server address, API token and bank, then change `disabled` to `false` and reload Pi. See the [configuration guide](docs/CONFIGURATION.md).
 
 In PiWeb, open **Settings → Plugins** to enable or disable the package. Reload the affected session to apply the change.
 

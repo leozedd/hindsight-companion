@@ -2,6 +2,11 @@
 
 [简体中文](CHANGELOG.zh-CN.md)
 
+## [0.1.3]
+
+- Create a disabled configuration template on the first plugin load in a fresh environment, and show setup guidance.
+- Keep existing and explicitly overridden configurations unchanged.
+
 ## [0.1.2]
 
 - Store plugin configuration in the Pi agent directory as `hindsight.json`.

@@ -1,6 +1,6 @@
 {
   "name": "pi-hindsight-companion",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A standard Pi / PiWeb package for the official Hindsight coding-agent extension. Independent Windows tray manager available in the source repository.",
   "type": "module",
   "license": "MIT",

@@ -8,10 +8,13 @@ Pi 插件的配置文件为 `~/.pi/agent/hindsight.json`。Windows 对应路径�
 
 首次加载时，如果 Pi 配置文件不存在，会从已有的 `~/.hindsight/coding-agent.json` 复制配置。原文件保留，供其他客户端使用。从 0.1.1 或更早版本升级后，重启一次 Pi / PiWeb，使官方运行时重新读取配置路径。
 
-创建该文件，或在已有配置中更新连接字段：
+没有现有配置时，插件首次加载会生成以下模板，并在 Pi / PiWeb 中提示文件位置。仅安装 npm 包不会生成文件，安装后需要启动或重载 Pi。模板在填写连接信息前保持禁用。显式 `HINDSIGHT_CONFIG` 指定的文件由用户管理。
+
+修改生成的配置文件：
 
 ```json
 {
+  "disabled": true,
   "serverMode": "self-hosted",
   "apiUrl": "http://127.0.0.1:8888",
   "apiToken": "",
@@ -22,13 +25,16 @@ Pi 插件的配置文件为 `~/.pi/agent/hindsight.json`。Windows 对应路径�
 
 | 字段 | 填写内容 |
 |---|---|
+| `disabled` | 配置连接后改为 `false` |
 | `serverMode` | 连接已有 Hindsight 服务时使用 `self-hosted` |
 | `apiUrl` | 运行 Pi 的机器能够访问的服务地址 |
 | `apiToken` | 该服务的 API 密钥 |
 | `bankId` | 要使用的记忆库 |
 | `dynamicBankId` | 设为 `false`，使用指定记忆库，而不是按项目选择 |
 
-填写 API 令牌和记忆库后重载会话。可运行官方 `hindsight_diagnose` 工具检查实际连接。
+填写服务地址、API 令牌和记忆库，将 `disabled` 改为 `false`，然后重载会话。禁用期间不会注册 Hindsight 工具；启用后可运行官方 `hindsight_diagnose` 检查实际连接。
+
+从另一台电脑连接时，`127.0.0.1` 指向那台电脑自身。应填写 Hindsight 服务所在机器的可访问地址、API 令牌和记忆库 ID；多个客户端共享记忆库时，使用同一个记忆库 ID。
 
 ## 召回与保存
 

@@ -10,10 +10,10 @@ export function agentDirectory(env = process.env, home = homedir()) {
   return resolve(custom);
 }
 
-// Called before importing upstream: its CONFIG_PATH is captured during module evaluation.
-// Copies only the existing configuration; never logs credentials or modifies the source.
+// Select the path before upstream captures CONFIG_PATH during module evaluation.
+// New installs start disabled; existing user configuration is never overwritten.
 export async function configurePiConfig({ env = process.env, home = homedir() } = {}) {
-  if (env.HINDSIGHT_CONFIG) return { path: env.HINDSIGHT_CONFIG, migrated: false, explicit: true };
+  if (env.HINDSIGHT_CONFIG) return { path: env.HINDSIGHT_CONFIG, migrated: false, created: false, explicit: true };
   const directory = agentDirectory(env, home);
   const target = join(directory, 'hindsight.json');
   try {
@@ -27,24 +27,34 @@ export async function configurePiConfig({ env = process.env, home = homedir() } 
     } catch (error) {
       if (error.code !== 'ENOENT') throw error;
     }
-    if (source !== undefined) {
+    const hasLegacy = source !== undefined;
+    if (hasLegacy) {
       // Validate without echoing source text on parse errors.
       try { const data = JSON.parse(source); if (!data || Array.isArray(data) || typeof data !== 'object') throw Error(); }
       catch { throw Error('Cannot migrate Hindsight configuration: legacy configuration must be a JSON object.'); }
-      await mkdir(directory, { recursive: true, mode: 0o700 });
-      let file;
-      try {
-        file = await open(target, 'wx', 0o600);
-        await file.writeFile(source, 'utf8');
-      } catch (error) {
-        if (error.code !== 'EEXIST') throw error;
-      } finally {
-        await file?.close();
-      }
-      env.HINDSIGHT_CONFIG = target;
-      return { path: target, migrated: Boolean(file), explicit: false };
+    } else {
+      source = JSON.stringify({
+        disabled: true,
+        serverMode: 'self-hosted',
+        apiUrl: 'http://127.0.0.1:8888',
+        apiToken: '',
+        bankId: 'my-bank',
+        dynamicBankId: false,
+      }, null, 2) + '\n';
     }
+    await mkdir(directory, { recursive: true, mode: 0o700 });
+    let file;
+    try {
+      file = await open(target, 'wx', 0o600);
+      await file.writeFile(source, 'utf8');
+    } catch (error) {
+      if (error.code !== 'EEXIST') throw error;
+    } finally {
+      await file?.close();
+    }
+    env.HINDSIGHT_CONFIG = target;
+    return { path: target, migrated: Boolean(file) && hasLegacy, created: Boolean(file) && !hasLegacy, explicit: false };
   }
   env.HINDSIGHT_CONFIG = target;
-  return { path: target, migrated: false, explicit: false };
+  return { path: target, migrated: false, created: false, explicit: false };
 }
