@@ -1,0 +1,23 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      '@vectorize-io/hindsight-coding-agents':
+        specifier: 0.8.7
+        version: 0.8.7
+
+packages:
+
+  '@vectorize-io/hindsight-coding-agents@0.8.7':
+    resolution: {integrity: sha512-GuGJdqvcPQpUuu9jWOjJa5OtaI/eAx20DgsiLKKEhfuSCDZXDBWH8Aa7lyj03dAVLMt40K7IciUBtD81QhdTBg==}
+    hasBin: true
+
+snapshots:
+
+  '@vectorize-io/hindsight-coding-agents@0.8.7': {}

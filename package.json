@@ -1,0 +1,29 @@
+{
+  "name": "pi-hindsight-companion",
+  "version": "0.1.0",
+  "description": "A standard Pi / PiWeb package for the official Hindsight coding-agent extension. Independent Windows tray manager available in the source repository.",
+  "type": "module",
+  "license": "MIT",
+  "repository": { "type": "git", "url": "https://github.com/leozedd/hindsight-companion.git" },
+  "homepage": "https://github.com/leozedd/hindsight-companion#readme",
+  "engines": { "node": ">=22" },
+  "keywords": ["pi-package", "pi-extension", "pi-web", "hindsight", "memory"],
+  "files": ["extension/hindsight.js", "README.md", "CHANGELOG.md", "LICENSE", "NOTICE", "SECURITY.md", "docs/CONFIGURATION.md", "docs/README.zh-CN.md", "docs/RELEASING.md", "windows/README.md"],
+  "pi": {
+    "extensions": ["./extension/hindsight.js"],
+    "skills": ["./node_modules/@vectorize-io/hindsight-coding-agents/skill"],
+    "prompts": [],
+    "themes": []
+  },
+  "dependencies": {
+    "@vectorize-io/hindsight-coding-agents": "0.8.7"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "audit:privacy": "node scripts/privacy-audit.mjs",
+    "sync:upstream": "node scripts/sync-upstream.mjs",
+    "release:check": "node scripts/release-check.mjs",
+    "prepublishOnly": "node scripts/release-check.mjs"
+  },
+  "publishConfig": { "access": "public", "registry": "https://registry.npmjs.org/" }
+}

@@ -1,0 +1,23 @@
+import { readFile, writeFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+const root = new URL('../', import.meta.url);
+const file = new URL('package.json', root);
+const pkg = JSON.parse(await readFile(file, 'utf8'));
+const dependency = '@vectorize-io/hindsight-coding-agents';
+const response = await fetch('https://registry.npmjs.org/' + dependency + '/latest', {signal:AbortSignal.timeout(20000)});
+if (!response.ok) throw Error('Official registry lookup failed');
+const {version} = await response.json();
+if (!/^\d+\.\d+\.\d+$/.test(version)) throw Error('Expected stable upstream semver');
+const old = pkg.dependencies[dependency];
+if (old === version) { console.log('Official dependency already current:', version); process.exit(0); }
+const a=version.split('.').map(Number),b=old.split('.').map(Number);
+const first=a.findIndex((x,i)=>x!==b[i]);
+if(first<0||a[first]<b[first])throw Error('Refusing upstream downgrade');
+const [major,minor,patch]=pkg.version.split('.').map(Number);
+pkg.version=`${major}.${minor}.${patch+1}`;
+pkg.dependencies[dependency]=version;
+await writeFile(file,JSON.stringify(pkg,null,2)+'\n');
+const changeFile=new URL('CHANGELOG.md',root);
+const changelog=await readFile(changeFile,'utf8');
+await writeFile(changeFile,changelog.replace('# Changelog\n',`# Changelog\n\n## [${pkg.version}]\n\n- Update official Hindsight runtime from ${old} to ${version}.\n`));
+console.log('Updated dependency and Companion release version. Run pnpm install --ignore-scripts, tests and release checks before review/publishing.');

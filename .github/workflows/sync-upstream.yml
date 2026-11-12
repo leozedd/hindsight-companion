@@ -1,0 +1,42 @@
+name: sync official runtime
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 7 * * 1'
+permissions:
+  contents: write
+  pull-requests: write
+concurrency:
+  group: sync-official-runtime
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - run: pnpm run sync:upstream
+      - run: pnpm install --ignore-scripts
+      - run: pnpm test
+      - run: pnpm run audit:privacy
+      - name: Open a reviewable update PR, never publish automatically
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if git diff --quiet; then exit 0; fi
+          branch=automation/official-runtime-$(node -p "require('./package.json').version")
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git switch -c "$branch"
+          git add package.json pnpm-lock.yaml CHANGELOG.md
+          git commit -m 'Update official Hindsight runtime'
+          git push origin "HEAD:$branch"
+          if ! gh pr view "$branch" >/dev/null 2>&1; then
+            gh pr create --head "$branch" --title 'Update official Hindsight runtime' --body 'Registry update with a Companion patch bump. Review upstream behavior, privacy checks and tests before merging and publishing. No service or memory migration is performed.'
+          fi
