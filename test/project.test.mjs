@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { mkdtemp, mkdir, readFile, writeFile, rm, stat } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, writeFile, rm, stat, symlink } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, normalize } from 'node:path';
 import { registerCurrentProject, projectDirectory, registerProjectCommand } from '../extension/project.js';
@@ -53,6 +53,13 @@ test('linked worktrees use the main project mapping', () => fixture(async ({ bas
  const result = await registerCurrentProject(configPath, worktree);
  assert.equal(normalize(result.root), normalize(root));assert.equal(result.bank, 'coding-agent::sample-project');
  const second = await registerCurrentProject(configPath, root);assert.equal(second.changed, false);
+}));
+
+test('directory aliases retain the host path spelling used by native routing', () => fixture(async ({ base, root, configPath }) => {
+ const alias = join(base, 'project-alias');await symlink(root, alias, process.platform === 'win32' ? 'junction' : 'dir');
+ const result = await registerCurrentProject(configPath, join(alias, 'src'), 'alias-project');
+ assert.equal(normalize(result.root), normalize(alias));
+ assert.equal(JSON.parse(await readFile(configPath, 'utf8')).mapPathToBank[portable(alias)], 'alias-project');
 }));
 
 test('an explicit Pi harness map is updated without modifying the global map', () => fixture(async ({ root, configPath, config }) => {

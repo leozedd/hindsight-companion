@@ -3,7 +3,7 @@ import { constants } from 'node:fs';
 import { copyFile, open, readFile, realpath, rename, stat, unlink } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
 import { homedir } from 'node:os';
-import { basename, dirname, normalize, resolve, sep } from 'node:path';
+import { basename, dirname, isAbsolute, normalize, relative, resolve, sep } from 'node:path';
 import { promisify } from 'node:util';
 
 const exec = promisify(execFile);
@@ -11,13 +11,30 @@ const isObject = value => value !== null && typeof value === 'object' && !Array.
 
 export class ProjectRegistrationError extends Error {}
 
+async function projectPathInWorkspace(root, cwd) {
+  const canonicalRoot = await realpath(root);
+  let ancestor = cwd;
+  for (;;) {
+    const suffix = relative(await realpath(ancestor), canonicalRoot);
+    if (suffix !== '..' && !suffix.startsWith(`..${sep}`) && !isAbsolute(suffix)) {
+      const candidate = resolve(ancestor, suffix);
+      if (await realpath(candidate) === canonicalRoot) return candidate;
+    }
+    const parent = dirname(ancestor);
+    if (parent === ancestor) return root;
+    ancestor = parent;
+  }
+}
+
 export async function projectDirectory(cwd) {
   const directory = resolve(cwd);
   try {
     const { stdout } = await exec('git', ['-C', directory, 'rev-parse', '--path-format=absolute', '--git-common-dir'], { timeout: 10000 });
     const common = resolve(stdout.trimEnd());
-    // Matches upstream's ordinary-repository and linked-worktree identity.
-    return basename(common) === '.git' ? dirname(common) : common;
+    // Git expands Windows 8.3 paths; upstream's filesystem probe keeps the host's
+    // spelling. Preserve that spelling so mapPathToBank matches the live cwd.
+    const root = basename(common) === '.git' ? dirname(common) : common;
+    return await projectPathInWorkspace(root, directory);
   } catch (error) {
     if (error.code === 128 && /not a git repository/i.test(error.stderr ?? '')) return directory;
     if (error.code === 'ENOENT') throw new ProjectRegistrationError('Git is required to identify the project directory. Install Git, then retry.');
