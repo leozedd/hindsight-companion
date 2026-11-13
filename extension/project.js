@@ -54,7 +54,7 @@ export async function registerCurrentProject(configPath, cwd, requestedBank = ''
     throw new ProjectRegistrationError('Usage: /hindsight-project [bank-id]. The bank ID cannot contain spaces or control characters.');
   }
   const root = await projectDirectory(cwd);
-  const bank = bankArgument || `coding-agent::${basename(root)}`;
+  const roots = [...new Set([root, await realpath(root)])];
   const file = await realpath(configPath);
   const lockPath = `${file}.companion.lock`;
   let lock;
@@ -75,14 +75,19 @@ export async function registerCurrentProject(configPath, cwd, requestedBank = ''
     const section = isObject(config.harnesses?.pi) && Object.hasOwn(config.harnesses.pi, 'mapPathToBank') ? config.harnesses.pi : config;
     const mappings = section.mapPathToBank ?? {};
     if (!isObject(mappings)) throw new ProjectRegistrationError('mapPathToBank must be a JSON object. No mapping was saved.');
-    const existing = Object.entries(mappings).find(([path]) => configuredPath(path) === normalize(root));
-    if (existing) {
-      if (bankArgument && existing[1] !== bankArgument) {
-        throw new ProjectRegistrationError(`This project is already mapped to ${existing[1]}. Edit mapPathToBank explicitly to change its destination; existing memory will not be moved.`);
-      }
-      return { root, bank: existing[1], changed: false, configPath: file };
+    const existing = Object.entries(mappings).filter(([path]) => roots.some(candidate => configuredPath(path) === normalize(candidate)));
+    if (new Set(existing.map(([, bank]) => bank)).size > 1) {
+      throw new ProjectRegistrationError('This project has directory aliases mapped to different banks. Resolve the conflicting mapPathToBank entries before registering it.');
     }
-    section.mapPathToBank = { ...mappings, [root.split(sep).join('/')]: bank };
+    const bank = existing[0]?.[1] ?? (bankArgument || `coding-agent::${basename(root)}`);
+    if (bankArgument && bank !== bankArgument) {
+      throw new ProjectRegistrationError(`This project is already mapped to ${bank}. Edit mapPathToBank explicitly to change its destination; existing memory will not be moved.`);
+    }
+    const missing = roots.filter(candidate => !existing.some(([path]) => configuredPath(path) === normalize(candidate)));
+    if (!missing.length) return { root, bank, changed: false, configPath: file };
+    // Node can expand Windows short paths at process startup while Git worktree pointers
+    // use long paths. Both spellings must route to the same bank without patching upstream.
+    section.mapPathToBank = { ...mappings, ...Object.fromEntries(missing.map(path => [path.split(sep).join('/'), bank])) };
     const mode = (await stat(file)).mode & 0o777;
     temporary = `${file}.${randomUUID()}.tmp`;
     const output = await open(temporary, 'wx', mode);

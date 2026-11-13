@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { mkdtemp, mkdir, readFile, writeFile, rm, stat, symlink } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, writeFile, realpath, rm, stat, symlink } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, normalize } from 'node:path';
 import { registerCurrentProject, projectDirectory, registerProjectCommand } from '../extension/project.js';
@@ -25,7 +25,8 @@ test('registers Git root from a child directory and preserves existing settings'
  assert.equal(normalize(result.root), normalize(root));
  assert.equal(result.bank, 'coding-agent::sample-project');assert.equal(result.changed, true);
  const current = JSON.parse(await readFile(configPath, 'utf8'));
- assert.deepEqual(current, { ...config, mapPathToBank: { ...config.mapPathToBank, [portable(root)]: result.bank } });
+ const routes = Object.fromEntries([...new Set([root, await realpath(root)])].map(path => [portable(path), result.bank]));
+ assert.deepEqual(current, { ...config, mapPathToBank: { ...config.mapPathToBank, ...routes } });
  assert.deepEqual(JSON.parse(await readFile(configPath + '.before-project-registration', 'utf8')), config);
  await assert.rejects(stat(configPath + '.companion.lock'), error => error.code === 'ENOENT');
  if (process.platform !== 'win32') assert.equal((await stat(configPath)).mode & 0o777, (await stat(configPath + '.before-project-registration')).mode & 0o777);
@@ -59,7 +60,9 @@ test('directory aliases retain the host path spelling used by native routing', (
  const alias = join(base, 'project-alias');await symlink(root, alias, process.platform === 'win32' ? 'junction' : 'dir');
  const result = await registerCurrentProject(configPath, join(alias, 'src'), 'alias-project');
  assert.equal(normalize(result.root), normalize(alias));
- assert.equal(JSON.parse(await readFile(configPath, 'utf8')).mapPathToBank[portable(alias)], 'alias-project');
+ const saved = JSON.parse(await readFile(configPath, 'utf8')).mapPathToBank;
+ assert.equal(saved[portable(alias)], 'alias-project');assert.equal(saved[portable(await realpath(root))], 'alias-project');
+ assert.equal((await registerCurrentProject(configPath, root)).bank, 'alias-project');
 }));
 
 test('an explicit Pi harness map is updated without modifying the global map', () => fixture(async ({ root, configPath, config }) => {
@@ -111,6 +114,6 @@ test('official runtime routes the registered project and its worktree separately
  const program = `import assert from 'node:assert/strict';import companion from ${JSON.stringify(entry)};const tools=[],commands=[];const pi=new Proxy({},{get:(_t,k)=>(...args)=>{if(k==='registerTool')tools.push(args[0]);if(k==='registerCommand')commands.push(args[0]);}});await companion(pi);assert.equal(tools.length,8);assert.ok(commands.includes('hindsight-project'));const result=await tools.find(t=>t.name==='hindsight_diagnose').execute('check',{},undefined,undefined,{cwd:process.cwd()});console.log(JSON.parse(result.content[0].text).bank_id);`;
  for (const [cwd, expected] of [[root, 'coding-agent::sample-project'], [join(root, 'src'), 'coding-agent::sample-project'], [worktree, 'coding-agent::sample-project'], [base, 'personal']]) {
   const env = { ...process.env, HINDSIGHT_CONFIG: configPath, HINDSIGHT_DISABLE_HOOKS: '1' };delete env.HINDSIGHT_DISABLED;
-  const output = execFileSync(process.execPath, ['--input-type=module', '-e', program], { cwd, env, encoding: 'utf8' });assert.equal(output.trim(), expected);
+  const output = execFileSync(process.execPath, ['--input-type=module', '-e', program], { cwd, env, encoding: 'utf8' });assert.equal(output.trim(), expected, `bank for ${cwd}`);
  }
 }));
