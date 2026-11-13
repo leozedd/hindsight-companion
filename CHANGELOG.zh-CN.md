@@ -2,6 +2,11 @@
 
 [English](CHANGELOG.md)
 
+## [0.1.4]
+
+- 新增 `/hindsight-project [bank-id]`，通过官方 `mapPathToBank` 登记当前项目并重载 Pi。
+- Git 子目录和关联 worktree 归到主项目，保留已有映射及其他配置。
+
 ## [0.1.3]
 
 - 修复全新环境不生成配置的问题：插件首次加载时创建禁用状态的配置模板，并提示配置步骤。

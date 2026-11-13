@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { audit, npm, root } from './privacy-audit.mjs';
 
 await audit();
-execFileSync(process.execPath, ['--test', 'test/privacy.test.mjs', 'test/package.test.mjs', 'test/docs.test.mjs', 'test/config.test.mjs'], {cwd:root,stdio:'inherit'});
+execFileSync(process.execPath, ['--test', 'test/privacy.test.mjs', 'test/package.test.mjs', 'test/docs.test.mjs', 'test/config.test.mjs', 'test/project.test.mjs'], {cwd:root,stdio:'inherit'});
 const pkg = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
 if (!pkg.keywords.includes('pi-package') || pkg.private) throw Error('Package cannot be discovered/published');
 if (!pkg.repository?.url?.startsWith('https://github.com/') || !pkg.homepage?.startsWith('https://github.com/')) {

@@ -23,6 +23,10 @@ pi install npm:pi-hindsight-companion
 
 在 PiWeb「设置 → 插件」中可启用或禁用插件包。切换后重载目标会话，使设置生效。
 
+### 使用项目记忆库
+
+在项目目录中打开会话，执行 `/hindsight-project`。Companion 会添加官方目录到记忆库的映射并重载 Pi，无需手工填写路径。自定义记忆库 ID 和 `personal` 默认库设置见[登记当前项目](CONFIGURATION.zh-CN.md#登记当前项目)。
+
 ### 更新插件
 
 在 PiWeb 中点击「检查 / 更新」，或执行：

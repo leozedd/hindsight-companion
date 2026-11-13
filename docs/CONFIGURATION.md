@@ -36,6 +36,37 @@ Set the server URL, API token and bank, then change `disabled` to `false` and re
 
 When connecting from another computer, `127.0.0.1` refers to that computer. Use the Hindsight server’s reachable address, API token and bank ID; for a shared bank, use the same bank ID on every client.
 
+## Register the current project
+
+In a Pi or PiWeb session opened in the project directory, run:
+
+```text
+/hindsight-project
+```
+
+The command adds the project to the official `mapPathToBank` configuration and reloads Pi automatically. With Git available, repository subdirectories and linked worktrees resolve to the main repository root. Outside Git, the current session directory is registered. Git must be installed for directory detection.
+
+The default bank ID is `coding-agent::<project-directory-name>`. To use the same bank from a differently named checkout, or separate unrelated projects with the same name, specify an ID:
+
+```text
+/hindsight-project coding-agent::my-project
+```
+
+Register once on each computer; its local path can differ, but the bank ID must match to share project memory. Existing mappings are reused. A conflicting explicit ID is refused rather than silently replacing the destination.
+
+The command changes routing only: it does not move existing memories, change connection or retention settings, or change the default bank for other directories. The first edit keeps a private backup beside the configuration as `hindsight.json.before-project-registration`. After a successful save, reload applies the route; if reload fails, restart Pi / PiWeb.
+
+To use `personal` outside registered projects, set these top-level fields in the existing configuration, keeping the connection fields:
+
+```json
+{
+  "bankId": "personal",
+  "dynamicBankId": false
+}
+```
+
+Only the session working directory determines its bank; discussing a project or editing its files from another directory does not switch banks. Unregistered directories still use the default bank. Existing history and memories are not relocated when routing changes.
+
 ## Recall and retention
 
 Additional options in this file control the official extension's behavior, including automatic injection, session retention and project ingestion. See the [official integration documentation](https://github.com/vectorize-io/hindsight/tree/main/hindsight-integrations/coding-agents) for the supported options. Fields omitted from the example use upstream defaults.

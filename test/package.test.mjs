@@ -9,7 +9,7 @@ function recorder(){
  const pi=new Proxy({}, {get:(_target,name)=>(...args)=>{calls.push({name,args});}});
  return {pi,calls};
 }
-test('wrapper delegates upstream registrations and adds only Skill discovery',async()=>{
+test('wrapper delegates upstream registrations and adds project command plus Skill discovery',async()=>{
  const upstream=recorder(),wrapped=recorder();
  const before={config:process.env.HINDSIGHT_CONFIG,disabled:process.env.HINDSIGHT_DISABLED};
  process.env.HINDSIGHT_CONFIG=new URL('../.release/test-config.json',import.meta.url).pathname;
@@ -23,7 +23,8 @@ test('wrapper delegates upstream registrations and adds only Skill discovery',as
   if(before.disabled===undefined)delete process.env.HINDSIGHT_DISABLED;else process.env.HINDSIGHT_DISABLED=before.disabled;
  }
  const shape=calls=>calls.map(({name,args})=>[name,typeof args[0]==='string'?args[0]:args[0]?.name]);
- assert.deepEqual(shape(wrapped.calls.slice(0,-1)),shape(upstream.calls));
+ assert.deepEqual(shape(wrapped.calls.slice(0,-2)),shape(upstream.calls));
+ const command=wrapped.calls.at(-2);assert.equal(command.name,'registerCommand');assert.equal(command.args[0],'hindsight-project');
  const extra=wrapped.calls.at(-1);assert.equal(extra.name,'on');assert.equal(extra.args[0],'resources_discover');
  assert.deepEqual(extra.args[1](),{skillPaths:[officialSkillPath]});
 });

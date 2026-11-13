@@ -23,6 +23,10 @@ Load or reload Pi after installation. On a new setup, the plugin creates a disab
 
 In PiWeb, open **Settings → Plugins** to enable or disable the package. Reload the affected session to apply the change.
 
+### Use a project bank
+
+Open a session in the project directory and run `/hindsight-project`. Companion adds the official directory-to-bank mapping and reloads Pi; no manual path entry is needed. See [project registration](docs/CONFIGURATION.md#register-the-current-project) for custom bank IDs and a `personal` fallback.
+
 ### Update
 
 Use PiWeb's **Check / Update** actions, or run:
